@@ -59,7 +59,7 @@
         }
 
         //Escape html strings.
-        mes = mes.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\&/g, '&amp;');
+        mes = mes.replace(/\&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
         logMessage = '<p style="border-bottom: solid 1px #777; padding-bottom: 2px; margin-bottom: 2px; ' + exStyle + '">' + mes + '</p>';
         debugLogEl.innerHTML =  logMessage + debugLogEl.innerHTML;
