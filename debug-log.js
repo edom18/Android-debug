@@ -3,7 +3,7 @@
     'use strict';
 
     var debugLogEl = doc.createElement('div'),
-        style      = debugLogEl.style;
+        style = debugLogEl.style;
 
     var isTouch = 'ontouchstart' in window,
         MOUSE_DOWN = isTouch ? 'touchstart' : 'mousedown',
@@ -17,7 +17,6 @@
         'z-index: 1000;',
         'width: 100%;',
         'box-sizing: border-box;',
-        //'height: 100px;',
         'overflow: auto;',
         'color: white;',
         'line-height: 1.3;',
@@ -26,7 +25,6 @@
         'padding: 5px;'
     ].join('');
 
-    var flg = false;
     function addListener(node, type, cb) {
         if (node.addEventListener) {
             node.addEventListener(type, cb, false);
@@ -36,6 +34,7 @@
         }
     }
 
+    var flg = false;
     addListener(debugLogEl, MOUSE_DOWN, function (e) {
         flg = true;
     });
@@ -48,6 +47,7 @@
         }
     });
 
+    //Attach an event.
     doc.body.appendChild(debugLogEl);
 
     function _log(mes, type) {
@@ -58,29 +58,22 @@
             exStyle = 'color: red;';
         }
 
+        //Escape html strings.
+        mes = mes.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\&/g, '&amp;');
+
         logMessage = '<p style="border-bottom: solid 1px #777; padding-bottom: 2px; margin-bottom: 2px; ' + exStyle + '">' + mes + '</p>';
         debugLogEl.innerHTML =  logMessage + debugLogEl.innerHTML;
-    }
-
-    function log() {
-        var mes = [];
-        for (var i = 0, l = arguments.length; i < l; i++) {
-            mes.push(arguments[i]);
-        }
-        _log(mes.join(''));
-    }
-
-    function error() {
-        var mes = [];
-        for (var i = 0, l = arguments.length; i < l; i++) {
-            mes.push(arguments[i], 'error');
-        }
-        _log(mes.join(''));
     }
 
     function _checkObj(obj) {
         var res = [],
             resobj = [];
+
+        var type = {}.toString.call(obj);
+
+        if (!(type === '[object Object]' || type === '[object Array]')) {
+            return [obj];
+        }
 
         for (var key in obj) {
             if (typeof obj[key] === 'object') {
@@ -95,9 +88,25 @@
         return res;
     }
 
-    function dump(obj) {
+    function _dump(obj) {
         var mes = _checkObj(obj);
-        _log(mes.join(', '));
+        return mes.join(', ');
+    }
+
+    function log() {
+        var mes = [];
+        for (var i = 0, l = arguments.length; i < l; i++) {
+            mes.push(_dump(arguments[i]));
+        }
+        _log(mes.join(''));
+    }
+
+    function error() {
+        var mes = [];
+        for (var i = 0, l = arguments.length; i < l; i++) {
+            mes.push(_dump(arguments[i]));
+        }
+        _log(mes.join(''), 'error');
     }
 
     function clear() {
@@ -107,7 +116,6 @@
     exports.debug = {
         log  : log,
         error: error,
-        dump : dump,
         clear: clear
     };
 
