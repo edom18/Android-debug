@@ -10,7 +10,7 @@
     function _addListener(node, type, callback, context) {
 
         function _handler(e) {
-            callback.apply(context, e);
+            callback.call(context, e);
         }
 
         if (node.addEventListener) {
@@ -41,7 +41,23 @@
             PRIVATE METHODS
         ---------------------------------------------------------- */
         _init: function () {
+
+            this.tab= doc.createElement('div');
+
+            this.tab.style.cssText = [
+                'position: absolute;',
+                'right: 5px;',
+                'top: 100%;',
+                'padding: 5px;',
+                'background: black;',
+                'background: rgba(0, 0, 0, 0.9);',
+                'border: solid 1px #666;'
+            ].join('');
+
+            this.tab.innerHTML = 'hide';
+
             this.el = doc.createElement('div');
+            this.el.appendChild(this.tab);
 
             this.el.style.cssText = [
                 'position: absolute;',
@@ -50,10 +66,10 @@
                 'z-index: 1000;',
                 'width: 100%;',
                 'box-sizing: border-box;',
-                'overflow: auto;',
                 'color: white;',
                 'line-height: 1.3;',
                 'border: solid 1px #333;',
+                'background: #111;',
                 'background: rgba(0, 0, 0, 0.7);',
                 'padding: 5px;',
                 '-webkit-transition: all 300ms ease-in-out;',
@@ -61,19 +77,17 @@
             ].join('');
 
             //Attach an event.
-            //_addListener(this.el, MOUSE_DOWN, this._mDown, this);
-            //_addListener(this.el, MOUSE_MOVE, this._mMove, this);
-            _addListener(this.el, MOUSE_UP,   this._mUp,   this);
+            _addListener(this.el, MOUSE_UP, this._mUp, this);
 
             //Append element to the body.
-            document.body.appendChild(this.el);
+            doc.body.appendChild(this.el);
         },
 
         _mDown: function (e) {
-            this.flg = !this.flg;
+            //
         },
         _mMove: function (e) {
-            this.flg = false;
+            //
         },
         _mUp: function (e) {
             this.flg = !this.flg;
@@ -91,8 +105,9 @@
          * @param {enum.<number>} type Log type.
          */
         _log: function (mes, type) {
+
             var exStyle = '';
-            var logMessage = '';
+            var logMessage;
 
             if (type === DebugLogger.type.ERROR) {
                 exStyle = 'color: red;';
@@ -101,8 +116,16 @@
             //Escape html strings.
             mes = mes.replace(/\&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-            logMessage = '<p style="border-bottom: solid 1px #777; padding-bottom: 2px; margin-bottom: 2px; ' + exStyle + '">' + mes + '</p>';
-            this.el.innerHTML =  logMessage + this.el.innerHTML;
+            logMessage = doc.createElement('p');
+            logMessage.innerHTML = mes;
+            logMessage.style.cssText = [
+                'border-bottom: solid 1px #777;',
+                'padding-bottom: 2px;',
+                'margin-bottom: 2px;',
+                exStyle
+            ].join('');
+
+            this.el.appendChild(logMessage);
         },
 
         _checkObj: function (obj) {
@@ -162,11 +185,14 @@
         },
 
         show: function () {
-            this.el.style.left = '0';
+            this.el.style.top = 0;
+            this.tab.innerHTML = 'hide';
         },
 
         hide: function () {
-            this.el.style.left = '-99%';
+            var top = this.el.clientHeight;
+            this.el.style.top = -top + 'px';
+            this.tab.innerHTML = 'show';
         }
     };
 
