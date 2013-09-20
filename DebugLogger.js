@@ -55,13 +55,14 @@
                 'line-height: 1.3;',
                 'border: solid 1px #333;',
                 'background: rgba(0, 0, 0, 0.7);',
-                'padding: 5px;'
+                'padding: 5px;',
+                '-webkit-transition: all 300ms ease-in-out;',
+                'transition: all 300ms ease-in-out;'
             ].join('');
 
-
             //Attach an event.
-            _addListener(this.el, MOUSE_DOWN, this._mDown, this);
-            _addListener(this.el, MOUSE_MOVE, this._mMove, this);
+            //_addListener(this.el, MOUSE_DOWN, this._mDown, this);
+            //_addListener(this.el, MOUSE_MOVE, this._mMove, this);
             _addListener(this.el, MOUSE_UP,   this._mUp,   this);
 
             //Append element to the body.
@@ -69,17 +70,20 @@
         },
 
         _mDown: function (e) {
-            this.flg = true;
+            this.flg = !this.flg;
         },
         _mMove: function (e) {
             this.flg = false;
         },
         _mUp: function (e) {
-            if (this.flg === true) {
-                this.el.parentNode.removeChild(this.el);
-            }
+            this.flg = !this.flg;
 
-            this.flg = false;
+            if (this.flg) {
+                this.hide();
+            }
+            else {
+                this.show();
+            }
         },
 
         /**
@@ -155,6 +159,14 @@
 
         clear: function () {
             this.el.innerHTML = '';
+        },
+
+        show: function () {
+            this.el.style.left = '0';
+        },
+
+        hide: function () {
+            this.el.style.left = '-99%';
         }
     };
 
