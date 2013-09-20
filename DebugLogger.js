@@ -51,7 +51,7 @@
                 'position: absolute;',
                 'right: 5px;',
                 'top: 100%;',
-                'padding: 15px;',
+                'padding: 10px;',
                 'background: black;',
                 'background: rgba(0, 0, 0, 0.9);'
             ].join('');
@@ -63,7 +63,7 @@
                 'position: absolute;',
                 'left: 5px;',
                 'top: 100%;',
-                'padding: 15px;',
+                'padding: 10px;',
                 'background: #500;',
                 'background: rgba(50, 0, 0, 0.9);'
             ].join('');
@@ -89,7 +89,7 @@
                 'border: solid 1px #333;',
                 'background: #111;',
                 'background: rgba(0, 0, 0, 0.7);',
-                'padding: 15px;',
+                'padding: 5px;',
                 '-webkit-transition: all 300ms ease-in-out;',
                 'transition: all 300ms ease-in-out;'
             ].join('');
