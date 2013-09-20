@@ -3,9 +3,12 @@
     'use strict';
 
     var isTouch = 'ontouchstart' in window,
-        MOUSE_DOWN = isTouch ? 'touchstart' : 'mousedown',
-        MOUSE_MOVE = isTouch ? 'touchmove'  : 'mousemove',
-        MOUSE_UP   = isTouch ? 'touchend'   : 'mouseup';
+        MouseEvent = {
+            CLICK: 'click',
+            DOWN : isTouch ? 'touchstart' : 'mousedown',
+            MOVE : isTouch ? 'touchmove'  : 'mousemove',
+            UP   : isTouch ? 'touchend'   : 'mouseup'
+        };
 
     function _addListener(node, type, callback, context) {
 
@@ -48,16 +51,31 @@
                 'position: absolute;',
                 'right: 5px;',
                 'top: 100%;',
-                'padding: 5px;',
+                'padding: 15px;',
                 'background: black;',
-                'background: rgba(0, 0, 0, 0.9);',
-                'border: solid 1px #666;'
+                'background: rgba(0, 0, 0, 0.9);'
             ].join('');
 
             this.tab.innerHTML = 'hide';
 
+            this.clearBtn = doc.createElement('div');
+            this.clearBtn.style.cssText = [
+                'position: absolute;',
+                'left: 5px;',
+                'top: 100%;',
+                'padding: 15px;',
+                'background: #500;',
+                'background: rgba(50, 0, 0, 0.9);'
+            ].join('');
+
+            this.clearBtn.innerHTML = 'clear';
+
+            this.logBody = doc.createElement('div');
+
             this.el = doc.createElement('div');
             this.el.appendChild(this.tab);
+            this.el.appendChild(this.clearBtn);
+            this.el.appendChild(this.logBody);
 
             this.el.style.cssText = [
                 'position: absolute;',
@@ -71,13 +89,14 @@
                 'border: solid 1px #333;',
                 'background: #111;',
                 'background: rgba(0, 0, 0, 0.7);',
-                'padding: 5px;',
+                'padding: 15px;',
                 '-webkit-transition: all 300ms ease-in-out;',
                 'transition: all 300ms ease-in-out;'
             ].join('');
 
             //Attach an event.
-            _addListener(this.el, MOUSE_UP, this._mUp, this);
+            _addListener(this.tab, MouseEvent.UP, this._mUp, this);
+            _addListener(this.clearBtn, MouseEvent.CLICK, this.clear, this);
 
             //Append element to the body.
             doc.body.appendChild(this.el);
@@ -98,6 +117,8 @@
             else {
                 this.show();
             }
+
+            return false;
         },
 
         /**
@@ -125,7 +146,7 @@
                 exStyle
             ].join('');
 
-            this.el.appendChild(logMessage);
+            this.logBody.appendChild(logMessage);
         },
 
         _checkObj: function (obj) {
@@ -141,7 +162,7 @@
 
             for (var key in obj) {
                 if (typeof obj[key] === 'object') {
-                    resobj = _checkObj(obj[key]);
+                    resobj = this._checkObj(obj[key]);
                     res.push(key + ': {' + resobj.join(', ') + '}');
                 }
                 else {
@@ -181,7 +202,7 @@
         },
 
         clear: function () {
-            this.el.innerHTML = '';
+            this.logBody.innerHTML = '';
         },
 
         show: function () {
